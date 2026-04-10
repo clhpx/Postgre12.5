@@ -1,0 +1,71 @@
+---------------------------------------------------------------------------
+-- vector.sql
+---------------------------------------------------------------------------
+
+-- Input/Output functions
+CREATE FUNCTION vector_in(cstring)
+   RETURNS vector
+   AS '_OBJWD_/vector'
+   LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION vector_out(vector)
+   RETURNS cstring
+   AS '_OBJWD_/vector'
+   LANGUAGE C IMMUTABLE STRICT;
+
+-- Create the type
+CREATE TYPE vector (
+   input = vector_in,
+   output = vector_out,
+   storage = extended
+);
+
+-- Dimension operator function
+CREATE FUNCTION vector_dim(vector)
+   RETURNS integer
+   AS '_OBJWD_/vector'
+   LANGUAGE C IMMUTABLE STRICT;
+
+-- L2 distance function
+CREATE FUNCTION vector_l2_distance(vector, vector)
+   RETURNS float4
+   AS '_OBJWD_/vector'
+   LANGUAGE C IMMUTABLE STRICT;
+
+-- Addition function
+CREATE FUNCTION vector_add(vector, vector)
+   RETURNS vector
+   AS '_OBJWD_/vector'
+   LANGUAGE C IMMUTABLE STRICT;
+
+-- Subtraction function
+CREATE FUNCTION vector_sub(vector, vector)
+   RETURNS vector
+   AS '_OBJWD_/vector'
+   LANGUAGE C IMMUTABLE STRICT;
+
+-- Operators
+CREATE OPERATOR <#> (
+   rightarg = vector,
+   procedure = vector_dim
+);
+
+CREATE OPERATOR <-> (
+   leftarg = vector,
+   rightarg = vector,
+   procedure = vector_l2_distance,
+   commutator = <->
+);
+
+CREATE OPERATOR + (
+   leftarg = vector,
+   rightarg = vector,
+   procedure = vector_add,
+   commutator = +
+);
+
+CREATE OPERATOR - (
+   leftarg = vector,
+   rightarg = vector,
+   procedure = vector_sub
+);
